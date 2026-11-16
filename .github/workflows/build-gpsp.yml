@@ -14,11 +14,12 @@ jobs:
           docker run \
           -v ${{ github.workspace }}:/root/workspace \
           techdevangelist/miyoomini-buildroot:latest /bin/bash -c \
-          "cd /root/workspace && git submodule init && git submodule update && patch -p0 < buildbot-tweaks.patch && cd libretro-super && ./libretro-fetch.sh gpsp && ./libretro-build.sh gpsp && cd dist/unix && for i in *.so; do cp ../info/\${i%.*}.info .; done && ls -lah ./"
+          "cd /root/workspace && git submodule init && git submodule update && patch -p0 < buildbot-tweaks.patch && cd libretro-super && ./libretro-fetch.sh gpsp && platform=armv ./libretro-build.sh gpsp && mkdir -p dist/gpsp_out && cp dist/unix/gpsp_libretro.so dist/gpsp_out/ && cp dist/info/gpsp_libretro.info dist/gpsp_out/ && ls -lah dist/gpsp_out/"
       - name: Upload the build artifacts
         uses: actions/upload-artifact@v4.0.0
         with:
           name: OnionOS gpSP core for arm7neonhf
-          path: libretro-super/dist/unix/*
+          path: libretro-super/dist/gpsp_out/*
           if-no-files-found: error
           retention-days: 90
+
